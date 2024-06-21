@@ -5,7 +5,7 @@ const taskQuerySchema = Joi.object({
   limit: Joi.number().integer().min(10).default(10),
   search: Joi.string(),
   description: Joi.string(),
-  status: Joi.string().valid("pending", "wprking", "review", "done", "archive"),
+  status: Joi.string().valid("pending", "working", "review", "done", "archive"),
 });
 
 const taskIdParamsSchema = Joi.object({

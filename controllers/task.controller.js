@@ -61,7 +61,7 @@ taskController.getAllTasks = async (req, res, next) => {
 taskController.getTaskById = async (req, res, next) => {
   try {
     const { id: targetId } = req.params;
-    const task = await Task.findById(targetId);
+    const task = await Task.findById(targetId).populate("assignee");
     if (!task) throw new AppError(404, "Bad request", "Task not found");
     sendResponse(res, 200, true, { message: "get user successfully", task });
   } catch (error) {
@@ -125,12 +125,24 @@ taskController.updateTask = async (req, res, next) => {
     const { id: taskId } = req.params;
     const { status } = req.body;
 
-    const task = await Task.findByIdAndUpdate(
-      taskId,
-      { status },
-      { new: true }
-    );
+    // const task = await Task.findByIdAndUpdate(
+    //   taskId,
+    //   { status },
+    //   { new: true }
+    // );
+
+    const task = await Task.findById(taskId);
     if (!task) throw new AppError(404, "Bad request", "Task not found");
+
+    if (task.status === "done" && status !== "archive") {
+      throw new AppError(
+        400,
+        "Bad request",
+        "Cannot change status from 'done' to other values except 'archive'"
+      );
+    }
+    task.status = status;
+    await task.save();
 
     // Send the updated task as a response
     sendResponse(res, 200, true, { message: "update Task Successfully", task });

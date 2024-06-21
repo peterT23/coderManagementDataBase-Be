@@ -1,4 +1,5 @@
 const { sendResponse, AppError } = require("../helpers/utils");
+const Task = require("../models/Task");
 const User = require("../models/User");
 
 const userControllers = {};
@@ -8,6 +9,14 @@ userControllers.createUser = async (req, res, next) => {
   const info = req.body;
   try {
     if (!info) throw new AppError(400, "Bad request", "Create user error!");
+    const existingUser = await User.findOne(info);
+    console.log("ex", info);
+    if (existingUser)
+      throw new AppError(
+        400,
+        "Bad request",
+        "name is already existed, please choose unique name"
+      );
     const createdUser = await User.create(info);
     sendResponse(
       res,
@@ -50,6 +59,21 @@ userControllers.getUserById = async (req, res, next) => {
     const user = await User.findById(targetId);
     if (!user) throw new AppError(404, "Bad request", "User not found");
     sendResponse(res, 200, true, { message: "get user successfully", user });
+  } catch (error) {
+    next(error);
+  }
+};
+//get all task of user
+userControllers.getTasksOfUser = async (req, res, next) => {
+  try {
+    const { id: userId } = req.params;
+    const user = await User.findById(userId);
+    if (!user) throw new AppError(404, "Bad request", "User not found");
+    const task = await Task.find({ assignee: userId });
+    if (!task)
+      throw new AppError(404, "Bad request", "user does not have task");
+
+    sendResponse(res, 200, true, { task }, null, "Get user tasks success");
   } catch (error) {
     next(error);
   }

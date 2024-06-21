@@ -6,6 +6,7 @@ const {
   createUser,
   getAllUsers,
   getUserById,
+  getTasksOfUser,
 } = require("../controllers/user.controllers");
 
 // CREATE
@@ -16,6 +17,13 @@ router.get("/", validateSchema(userQuerySchema, "query"), getAllUsers);
 
 //get user by id
 router.get("/:id", validateSchema(userIdParamsSchema, "params"), getUserById);
+
+//get user's task
+router.get(
+  "/:id/tasks",
+  validateSchema(userIdParamsSchema, "params"),
+  getTasksOfUser
+);
 
 // UPDATE
 // router.put(

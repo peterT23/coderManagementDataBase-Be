@@ -1,8 +1,8 @@
 const { sendResponse, AppError } = require("./helpers/utils.js");
 require("dotenv").config();
 const mongoose = require("mongoose");
-// const mongoURI = process.env.ATLASMONGO_URI;
-const mongoURI = process.env.MONGODB_URI;
+const mongoURI = process.env.ATLASMONGO_URI;
+// const mongoURI = process.env.MONGODB_URI;
 const cors = require("cors");
 
 var express = require("express");

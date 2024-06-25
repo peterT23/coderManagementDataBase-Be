@@ -13,6 +13,7 @@ const {
   assignTaskToUser,
   unAssignTask,
   updateTask,
+  deleteTask,
 } = require("../controllers/task.controller");
 
 const router = express.Router();
@@ -27,9 +28,7 @@ router.get("/", validateSchema(taskQuerySchema, "query"), getAllTasks);
 router.get("/:id", validateSchema(taskIdParamsSchema, "params"), getTaskById);
 
 // DELETE a task by ID
-router.delete("/:id", (req, res) => {
-  // Your code here
-});
+router.delete("/:id", validateSchema(taskIdParamsSchema), deleteTask);
 
 // Assign task to user by ID
 router.put(
